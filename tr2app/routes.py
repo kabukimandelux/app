@@ -1,27 +1,46 @@
+#Added to git
 from tr2app.models import Member, User, Billing
 from tr2app import app, db, bcrypt
 from tr2app.forms import LoginForm, AddMemberForm, EditMemberForm, BillingForm
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user,current_user,logout_user, login_required
+import struct
 
 def stats():
     actif = Member.query.filter_by(membertype='1').count()
     ancien = Member.query.filter_by(membertype='2').count()
     candidat = Member.query.filter_by(membertype='3').count()
     honoraire = Member.query.filter_by(membertype='4').count()
-    return actif,ancien,candidat,honoraire
+    balancequery = db.session.query(db.func.sum(Billing.amount)).all()
+    print (balancequery) 
+    balance=0
+    item =0
+    for i in balancequery:
+        item = balancequery.pop()
+        print (item)
+    #db.session.query(db.func.sum(Billing.amount)).filter_by(member_id=1).all()
+    return actif,ancien,candidat,honoraire,balance
+
 
 @app.route("/home")
 @login_required
 def home():
-    actif,ancien,candidat,honoraire = stats()
-    return render_template('home.html',actifs=actif,anciens=ancien,candidats=candidat,honoraires=honoraire)
+    actif,ancien,candidat,honoraire,balance = stats()
+    return render_template('home.html',actifs=actif,anciens=ancien,candidats=candidat,honoraires=honoraire,balance=balance)
 
-@app.route("/viewmembers")
+@app.route("/viewallmembers")
 @login_required
-def viewmembers():
+def viewallmembers():
     member = Member.query.all()
-    return render_template('viewmembers.html', member=member)
+    return render_template('viewallmembers.html', member=member)
+
+@app.route("/viewmembers/<id>")
+@login_required
+def viewmembers(id):
+    queryid = id
+    form_action = url_for('viewallmembers')
+    member = Member.query.filter_by(membertype=queryid).all()
+    return render_template('viewallmembers.html', member=member)
 
 #Login Working, still needs to be connected to user database, define username not existing
 @app.route("/")

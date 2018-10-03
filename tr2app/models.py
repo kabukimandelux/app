@@ -1,3 +1,4 @@
+#Added to git
 from tr2app import db, login_manager
 from flask_login import UserMixin
 import datetime
@@ -37,6 +38,5 @@ class Billing(db.Model):
     member_list = db.relationship('Member',foreign_keys=[member_id])
 
     def __repr__(self):
-        return f"Bill('{self.title}', '{self.date_posted}')"
+        return f"Bill('{self.member_id}', '{self.date}', '{self.amount}')"
 
-#test
