@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<br><br>
+<div>
+        <table class="table">
+                <tr>
+                        <th scope="col">  Id</th>
+                        <th scope="col"> Name </th>
+                        <th scope="col"> Firstname </th>
+                        <th scope="col"> Email </th>
+                        <th scope="col">Member Type</th>
+                        <th scope="col">Edit</th>
+                </tr>
+                {% for member in member %}
+
+                <tr>
+                        <td> {{ member.id }} </td>
+                        <td> {{ member.name }} </td>
+                        <td> {{ member.firstname }} </td>
+                        <td> {{ member.email }} </td>
+                        <td> {{ member.membertype }} </td>
+                        <td> <a href="/editmember/{{ member.id }}">Edit</a></td>
+
+                </tr>
+                {% endfor %}
+</table>
+</div>
+
+{% endblock content %}
