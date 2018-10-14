@@ -19,6 +19,7 @@ class Member(db.Model):
     image_file = db.Column(db.String(20), default='default.jpg')
     membertype = db.Column(db.String(20),nullable=False)
     bills = db.relationship('Billing',backref='account',lazy=True)
+    attendance = db.relationship('Attendance',backref='attended',lazy=True)
 
     def __repr__(self):
         return f"Member('{self.id}',{self.name}', '{self.email}', '{self.image_file}')"
@@ -40,3 +41,27 @@ class Billing(db.Model):
     def __repr__(self):
         return f"Bill('{self.member_id}', '{self.date}', '{self.amount}')"
 
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.String(40), nullable=False)
+    type = db.Column(db.String(40), nullable=False)
+    name = db.Column(db.String(40), nullable=False)
+    billed_status = db.Column(db.Boolean, nullable=False)
+    attendance = db.relationship('Attendance',backref='presence',lazy=True)
+
+    def __repr__(self):
+        return f"Event('{self.id}', '{self.date}', '{self.name}')"
+
+class Attendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    event_list = db.relationship('Event',foreign_keys=[event_id])
+    member_id = db.Column(db.Integer, db.ForeignKey('member.id'), nullable=False)
+    member_list = db.relationship('Member',foreign_keys=[member_id])
+    status = db.Column(db.String(10), nullable=False, default=0)
+    __table_args__ = (db.UniqueConstraint('event_id','member_id'),)
+    
+
+    def __repr__(self):
+        return f"Attendance('{self.member_id}', '{self.event_id}', '{self.status}')"

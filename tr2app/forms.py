@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateField, DecimalField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from tr2app.models import Member
+from tr2app.models import Member, Attendance
 import datetime
 
 class AddMemberForm(FlaskForm):
@@ -53,5 +53,19 @@ class BillingForm(FlaskForm):
     amount = DecimalField('Amount', validators=[DataRequired()])
     image_file = StringField('Attachment', validators=[DataRequired()])
     member_id = SelectField(label="Billed to", coerce=int)
-    #member_id = SelectField(label="Billed to",coerce=int)
     bill = SubmitField('Add Bill')
+
+class EventForm(FlaskForm):
+    date = DateField('Date')
+    description = StringField('Description', validators=[DataRequired()])
+    type = SelectField('Event Tyoe',choices=[('1','Stat Locale'),('2','Stat Commune'),('3','Stat Nationale'),('4','CS')])
+    name = StringField('Event Name', validators=[DataRequired()])
+    billed_status = BooleanField('Billed ?')
+    create = SubmitField('Create')
+
+class AttendanceForm(FlaskForm):
+    status = StringField('Status', validators=[DataRequired()])
+    event_id = SelectField(label="Event Name", coerce=int)
+    member_id = SelectField(label="Member Name", coerce=int)
+    enter = SubmitField('enter')
+
